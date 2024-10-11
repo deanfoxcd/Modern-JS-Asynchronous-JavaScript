@@ -182,3 +182,66 @@ const getCountryDataP = function (country) {
 
 btn.addEventListener('click', () => getCountryDataP('australia'));
 // getCountryDataP('fdhjk');
+
+// **CODING CHALLENGE #1**
+/*
+const whereAmI = function (lat, lng) {
+  const revUrl = `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
+
+  // // From scratch
+  //   fetch(revUrl)
+  //     .then(response => {
+  //       if (!response.ok)
+  //         throw new Error(`Co-ordinates not found (${response.status})`);
+  //       return response.json();
+  //     })
+  //     .then(data =>
+  //       fetch(`https://restcountries.com/v3.1/name/${data.countryName}`)
+  //     )
+  //     .then(response => {
+  //       if (!response.ok)
+  //         throw new Error(`Country not found (${response.status})`);
+  //       return response.json();
+  //     })
+  //     .then(data => renderCountry(data[0]))
+  //     .finally(() => {
+  //       countriesContainer.style.opacity = 1;
+  //     });
+
+//   // Using the functions above
+  getJSON(revUrl, 'Co-ordinates not found')
+    .then(data => getCountryDataP(data.countryName))
+    .finally(() => (countriesContainer.style.opacity = 1));
+};
+whereAmI(-33.933, 18.474);
+*/
+
+// Building a Promise
+/*
+
+// const lotteryPromise = new Promise(function (resolve, reject) {
+//   console.log('Lottery draw is happening now...');
+//   setTimeout(() => {
+//     if (Math.random() >= 0.5) resolve('You win!! 💸');
+//     else reject(new Error('You lose 💩'));
+//   }, 2000);
+// });
+
+// lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+*/
+
+// Promisifying is the process of converting callback based behaviour to promise based behaviour
+
+// Example:
+const wait = function (seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+};
+
+wait(5)
+  .then(() => {
+    console.log('5 seconds have passed');
+    return wait(1);
+  })
+  .then(() => console.log('Waited another 1 second'));
+
+// You could use the above to log a timer for example
