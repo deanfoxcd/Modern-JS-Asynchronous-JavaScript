@@ -180,7 +180,7 @@ const getCountryDataP = function (country) {
     });
 };
 
-btn.addEventListener('click', () => getCountryDataP('australia'));
+// btn.addEventListener('click', () => getCountryDataP('australia'));
 // getCountryDataP('fdhjk');
 
 // **CODING CHALLENGE #1**
@@ -208,7 +208,7 @@ const whereAmI = function (lat, lng) {
   //       countriesContainer.style.opacity = 1;
   //     });
 
-//   // Using the functions above
+//   // Using the functions created in the lessons above
   getJSON(revUrl, 'Co-ordinates not found')
     .then(data => getCountryDataP(data.countryName))
     .finally(() => (countriesContainer.style.opacity = 1));
@@ -228,7 +228,7 @@ whereAmI(-33.933, 18.474);
 // });
 
 // lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
-*/
+
 
 // Promisifying is the process of converting callback based behaviour to promise based behaviour
 
@@ -245,3 +245,113 @@ wait(5)
   .then(() => console.log('Waited another 1 second'));
 
 // You could use the above to log a timer for example
+*/
+
+// Example 2:
+/*
+// navigator.geolocation.getCurrentPosition(
+//   position => console.log(position),
+//   err => console.error(err)
+// );
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   position => resolve(position),
+    //   err => reject(err)
+    // );
+    navigator.geolocation.getCurrentPosition(resolve, reject); // Shorter
+  });
+};
+
+// getPosition().then(res => console.log(res.coords.latitude));
+
+const whereAmI = function (lat, lng) {
+  //   const revUrl = `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
+
+  getPosition()
+    .then(pos => {
+      console.log(pos.coords);
+      const { latitude: lat, longitude: lng } = pos.coords;
+      console.log(lat, lng);
+
+      return fetch(
+        `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+      );
+    })
+
+    .then(response => {
+      if (!response.ok)
+        throw new Error(`Co-ordinates not found (${response.status})`);
+      return response.json();
+    })
+    .then(data =>
+      fetch(`https://restcountries.com/v3.1/alpha/${data.countryCode}`)
+    )
+    .then(response => {
+      if (!response.ok)
+        throw new Error(`Country not found (${response.status})`);
+      return response.json();
+    })
+    .then(data => renderCountry(data[0]))
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
+};
+
+// whereAmI(36, -83);
+// 36.1332736 - 83.7025792;
+
+btn.addEventListener('click', whereAmI);
+*/
+
+// ** CODING CHALLENGE #2 **
+/*
+
+const imgContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const imgEl = document.createElement('img');
+    imgEl.src = imgPath;
+    imgEl.addEventListener('load', function () {
+      imgContainer.append(imgEl);
+      resolve(imgEl);
+    });
+    imgEl.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+const wait = function (seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+};
+
+let currentImg;
+
+createImage('img/img-1.jpg')
+  .then(img => {
+    currentImg = img;
+    console.log('Image 1 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img/img-2.jpg');
+  })
+  .then(img => {
+    currentImg = img;
+    console.log('Image 2 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img/img-3.jpg');
+  })
+  .then(img => {
+    currentImg = img;
+    console.log('Image 3 loaded');
+  })
+  .catch(err => console.error(err));
+*/
