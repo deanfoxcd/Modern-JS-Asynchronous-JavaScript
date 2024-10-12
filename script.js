@@ -357,6 +357,8 @@ createImage('img/img-1.jpg')
 */
 
 // Consuming Promises with Async/Await
+/*
+
 // does away with massive chaining
 
 const getPosition = function () {
@@ -389,11 +391,65 @@ const whereAmI = async function () {
     const data = await res.json();
 
     renderCountry(data[0]);
+    // console.log(dataGeo);
+
+    return `You are in ${dataGeo.locality}, ${dataGeo.principalSubdivision}, ${dataGeo.countryName}`; // The return value becomes the fulfillment of the promise
   } catch (err) {
     console.error(err);
     renderError(`Something went wrong ${err}`);
+
+    // Reject promise returned from async function if there's an error (otherwise undefined)
+    throw err;
   }
 };
 
-whereAmI();
-// console.log('FIRST');
+// Returning values from async/await
+
+// The old way
+console.log('Getting location');
+// whereAmI();
+// Returning a value from async/await
+// whereAmI()
+//   .then(city => console.log(city))
+//   .catch(err => console.error(`${err.message}`))
+//   .finally(() => console.log('Finished getting location'));
+// // console.log('FIRST');
+
+// Using async/await
+(async function () {
+  try {
+    const city = await whereAmI();
+    console.log(city);
+  } catch (err) {
+    console.error(`${err.message}`);
+  }
+  console.log('Finised getting location');
+})();
+*/
+
+// Returning Promises in Parallel (for when the promises don't rely on each other)
+
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    // In series
+    // const [data1] = await getJSON(`https://restcountries.com/v3.1/name/${c1}`);
+    // const [data2] = await getJSON(`https://restcountries.com/v3.1/name/${c2}`);
+    // const [data3] = await getJSON(`https://restcountries.com/v3.1/name/${c3}`);
+
+    // console.log([data1.capital[0], data2.capital[0], data3.capital[0]]);
+
+    // In parallel (if one rejects, it all rejects)
+    const data = await Promise.all([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+    ]);
+
+    // console.log(data);
+    console.log(data.map(city => city[0].capital[0]));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+get3Countries('south africa', 'united kingdom', 'mexico');
