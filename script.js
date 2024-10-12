@@ -428,6 +428,7 @@ console.log('Getting location');
 */
 
 // Returning Promises in Parallel (for when the promises don't rely on each other)
+/*
 
 const get3Countries = async function (c1, c2, c3) {
   try {
@@ -453,3 +454,47 @@ const get3Countries = async function (c1, c2, c3) {
 };
 
 get3Countries('south africa', 'united kingdom', 'mexico');
+*/
+
+// Other Promise Combinators (Race, Allsettled, Any)
+/*
+
+// Promise.race (first settled promise wins the race, fulfilled or rejected)
+(async function () {
+  const res = await Promise.race([
+    getJSON(`https://restcountries.com/v3.1/name/italy`),
+    getJSON(`https://restcountries.com/v3.1/name/spain`),
+    getJSON(`https://restcountries.com/v3.1/name/canada`),
+  ]);
+  console.log(res[0]);
+})();
+
+// Set a custom timout time
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error('Request took too long'));
+    }, sec * 1000);
+  });
+};
+
+Promise.race([getJSON(`https://restcountries.com/v3.1/name/egypt`), timeout(1)])
+  .then(res => console.log(res[0]))
+  .catch(err => console.error(err));
+
+// Promise.allSettled (creates an array of all settled promises no matter result. Doesn't shortcircuit)
+Promise.allSettled([
+  Promise.resolve('Resolved'),
+  Promise.reject('Rejected'),
+  Promise.resolve('Resolved'),
+]).then(res => console.log(res));
+
+// Promise.any (returns first fulfilled promise, ignores rejections)
+Promise.any([
+  Promise.resolve('Resolved'),
+  Promise.reject('Rejected'),
+  Promise.resolve('Resolved'),
+]).then(res => console.log(res));
+*/
+
+// ** CODING CHALLENGE #3 **
