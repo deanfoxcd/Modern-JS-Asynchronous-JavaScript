@@ -66,12 +66,12 @@ const renderCountry = function (data, className = '') {
               </div>
           </article>`;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  //   countriesContainer.style.opacity = 1;
+  countriesContainer.style.opacity = 1;
 };
 
 const renderError = function (msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
-  //   countriesContainer.style.opacity = 1;
+  countriesContainer.style.opacity = 1;
 };
 
 const getCountryAndNeighbour = function (country) {
@@ -355,3 +355,45 @@ createImage('img/img-1.jpg')
   })
   .catch(err => console.error(err));
 */
+
+// Consuming Promises with Async/Await
+// does away with massive chaining
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function () {
+  try {
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+
+    // Reverse geocoding
+    const resGeo = await fetch(
+      `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+    );
+    if (!resGeo.ok) throw new Error('Problem getting location data');
+
+    const dataGeo = await resGeo.json();
+
+    // Country data
+    // fetch(`https://restcountries.com/v3.1/name/${country}`).then((res) => console.log(res))
+    const res = await fetch(
+      `https://restcountries.com/v3.1/alpha/${dataGeo.countryCode}`
+    );
+    if (!resGeo.ok) throw new Error('Problem getting country data');
+
+    const data = await res.json();
+
+    renderCountry(data[0]);
+  } catch (err) {
+    console.error(err);
+    renderError(`Something went wrong ${err}`);
+  }
+};
+
+whereAmI();
+// console.log('FIRST');
