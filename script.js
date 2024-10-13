@@ -498,3 +498,64 @@ Promise.any([
 */
 
 // ** CODING CHALLENGE #3 **
+/*
+
+// Code from #2
+const imgContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const imgEl = document.createElement('img');
+    imgEl.src = imgPath;
+    imgEl.addEventListener('load', function () {
+      imgContainer.append(imgEl);
+      resolve(imgEl);
+    });
+    imgEl.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+const wait = function (seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+};
+
+const loadNPause = async function () {
+  try {
+    let img = await createImage('img/img-1.jpg');
+    await wait(2);
+    img.style.display = 'none';
+    img = await createImage('img/img-2.jpg');
+    await wait(2);
+    img.style.display = 'none';
+    img = await createImage('img/img-3.jpg');
+    await wait(2);
+  } catch (err) {
+    console.error(err);
+  }
+};
+// loadNPause();
+
+const imgArray = ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg'];
+
+const loadAll = async function (imgArr) {
+  try {
+    // My solution
+    const imgs = await Promise.all(
+      imgArr.map(async img => await createImage(img))
+    );
+    console.log(imgs);
+    imgs.forEach(img => img.classList.add('parallel'));
+
+    // Course Solution
+    // const imgs = imgArr.map(async img => await createImage(img));
+    // const imgEl = await Promise.all(imgs);
+    // console.log(imgEl);
+    // imgEl.forEach(img => img.classList.add('parallel'));
+  } catch (err) {
+    console.error(err);
+  }
+};
+loadAll(imgArray);
+*/
